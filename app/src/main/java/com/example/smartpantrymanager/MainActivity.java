@@ -12,6 +12,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,8 +39,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewPantry.setAdapter(pantryAdapter);
 
         Button buttonAddIngredient = findViewById(R.id.buttonAddIngredient);
-        Button buttonSuggestedRecipes = findViewById(R.id.buttonSuggestedRecipes);
-        Button buttonSettings = findViewById(R.id.buttonSettings);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
 
         buttonAddIngredient.setOnClickListener(v -> {
             Intent intent = new Intent(
@@ -48,20 +49,35 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        buttonSuggestedRecipes.setOnClickListener(v -> {
-            Intent intent = new Intent(
-                    MainActivity.this,
-                    SuggestedRecipesActivity.class
-            );
-            startActivity(intent);
-        });
+        bottomNavigation.setSelectedItemId(R.id.navPantry);
 
-        buttonSettings.setOnClickListener(v -> {
-            Intent intent = new Intent(
-                    MainActivity.this,
-                    SettingsActivity.class
-            );
-            startActivity(intent);
+        bottomNavigation.setOnItemSelectedListener(item -> {
+
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.navPantry) {
+                return true;
+
+            } else if (itemId == R.id.navRecipes) {
+
+                Intent intent = new Intent(
+                        MainActivity.this,
+                        SuggestedRecipesActivity.class
+                );
+                startActivity(intent);
+                return true;
+
+            } else if (itemId == R.id.navSettings) {
+
+                Intent intent = new Intent(
+                        MainActivity.this,
+                        SettingsActivity.class
+                );
+                startActivity(intent);
+                return true;
+            }
+
+            return false;
         });
 
         ViewCompat.setOnApplyWindowInsetsListener(

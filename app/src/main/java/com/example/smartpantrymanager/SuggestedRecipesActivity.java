@@ -1,5 +1,6 @@
 package com.example.smartpantrymanager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -11,6 +12,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -30,6 +33,7 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
 
         recyclerViewSuggestedRecipes = findViewById(R.id.recyclerViewSuggestedRecipes);
         textNoRecipes = findViewById(R.id.textNoRecipes);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
 
         databaseHelper = new DatabaseHelper(this);
 
@@ -37,11 +41,55 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
                 new LinearLayoutManager(this)
         );
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        bottomNavigation.setSelectedItemId(R.id.navRecipes);
+
+        bottomNavigation.setOnItemSelectedListener(item -> {
+
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.navRecipes) {
+                return true;
+
+            } else if (itemId == R.id.navPantry) {
+
+                Intent intent = new Intent(
+                        SuggestedRecipesActivity.this,
+                        MainActivity.class
+                );
+                startActivity(intent);
+                return true;
+
+            } else if (itemId == R.id.navSettings) {
+
+                Intent intent = new Intent(
+                        SuggestedRecipesActivity.this,
+                        SettingsActivity.class
+                );
+                startActivity(intent);
+                return true;
+            }
+
+            return false;
         });
+
+        ViewCompat.setOnApplyWindowInsetsListener(
+                findViewById(R.id.main),
+                (v, insets) -> {
+
+                    Insets systemBars = insets.getInsets(
+                            WindowInsetsCompat.Type.systemBars()
+                    );
+
+                    v.setPadding(
+                            systemBars.left,
+                            systemBars.top,
+                            systemBars.right,
+                            systemBars.bottom
+                    );
+
+                    return insets;
+                }
+        );
     }
 
     @Override
@@ -62,7 +110,10 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
             ArrayList<RecipeIngredient> requiredIngredients =
                     databaseHelper.getRecipeIngredients(recipe.getId());
 
-            if (IngredientMatcher.canMakeRecipe(pantryItems, requiredIngredients)) {
+            if (IngredientMatcher.canMakeRecipe(
+                    pantryItems,
+                    requiredIngredients
+            )) {
                 suggestedRecipes.add(recipe);
             }
         }

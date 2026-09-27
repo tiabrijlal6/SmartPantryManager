@@ -1,5 +1,6 @@
 package com.example.smartpantrymanager;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -11,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -26,6 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         switchExpiryAlerts = findViewById(R.id.switchExpiryAlerts);
         spinnerUnitPreference = findViewById(R.id.spinnerUnitPreference);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
 
         sharedPreferences = getSharedPreferences(
                 "SmartPantrySettings",
@@ -89,6 +93,37 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        bottomNavigation.setSelectedItemId(R.id.navSettings);
+
+        bottomNavigation.setOnItemSelectedListener(item -> {
+
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.navSettings) {
+                return true;
+
+            } else if (itemId == R.id.navPantry) {
+
+                Intent intent = new Intent(
+                        SettingsActivity.this,
+                        MainActivity.class
+                );
+                startActivity(intent);
+                return true;
+
+            } else if (itemId == R.id.navRecipes) {
+
+                Intent intent = new Intent(
+                        SettingsActivity.this,
+                        SuggestedRecipesActivity.class
+                );
+                startActivity(intent);
+                return true;
+            }
+
+            return false;
+        });
 
         ViewCompat.setOnApplyWindowInsetsListener(
                 findViewById(R.id.main),
