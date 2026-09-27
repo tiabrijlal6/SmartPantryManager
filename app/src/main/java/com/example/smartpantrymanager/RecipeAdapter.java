@@ -1,5 +1,6 @@
 package com.example.smartpantrymanager;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,20 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         holder.textRecipeName.setText(recipe.getName());
         holder.textRecipeStatus.setText("Ready to make");
+
+        holder.itemView.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    holder.itemView.getContext(),
+                    RecipeDetailActivity.class
+            );
+
+            intent.putExtra("RECIPE_ID", recipe.getId());
+            intent.putExtra("RECIPE_NAME", recipe.getName());
+            intent.putExtra("RECIPE_STEPS", recipe.getSteps());
+
+            holder.itemView.getContext().startActivity(intent);
+        });
     }
 
     @Override
