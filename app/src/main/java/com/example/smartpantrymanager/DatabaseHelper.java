@@ -1,9 +1,11 @@
 package com.example.smartpantrymanager;
+
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.content.ContentValues;
-import android.database.Cursor;
+
 import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -14,6 +16,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
+    // Creates all database tables when the app database is created for the first time.
     @Override
     public void onCreate(SQLiteDatabase db) {
 
@@ -40,9 +44,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(createRecipesTable);
         db.execSQL(createRecipeIngredientsTable);
+
         seedRecipes(db);
     }
 
+    // Adds the recipe tables when upgrading from the original database version.
+    // Existing pantry data is preserved.
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
@@ -62,11 +69,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             db.execSQL(createRecipesTable);
             db.execSQL(createRecipeIngredientsTable);
+
             seedRecipes(db);
         }
     }
 
-    public boolean addPantryItem(String name, double quantity, String unit, String expiryDate) {
+    // CREATE: adds a new pantry item to the database.
+    public boolean addPantryItem(
+            String name,
+            double quantity,
+            String unit,
+            String expiryDate) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -76,11 +89,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("unit", unit);
         values.put("expiry_date", expiryDate);
 
-        long result = db.insert("pantry_items", null, values);
+        long result = db.insert(
+                "pantry_items",
+                null,
+                values
+        );
 
         return result != -1;
     }
 
+    // READ: retrieves all pantry items in alphabetical order.
     public ArrayList<PantryItem> getAllPantryItems() {
 
         ArrayList<PantryItem> pantryItems = new ArrayList<>();
@@ -94,11 +112,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-                double quantity = cursor.getDouble(cursor.getColumnIndexOrThrow("quantity"));
-                String unit = cursor.getString(cursor.getColumnIndexOrThrow("unit"));
-                String expiryDate = cursor.getString(cursor.getColumnIndexOrThrow("expiry_date"));
+                int id = cursor.getInt(
+                        cursor.getColumnIndexOrThrow("id")
+                );
+
+                String name = cursor.getString(
+                        cursor.getColumnIndexOrThrow("name")
+                );
+
+                double quantity = cursor.getDouble(
+                        cursor.getColumnIndexOrThrow("quantity")
+                );
+
+                String unit = cursor.getString(
+                        cursor.getColumnIndexOrThrow("unit")
+                );
+
+                String expiryDate = cursor.getString(
+                        cursor.getColumnIndexOrThrow("expiry_date")
+                );
 
                 PantryItem pantryItem = new PantryItem(
                         id,
@@ -118,6 +150,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return pantryItems;
     }
 
+    // DELETE: removes a pantry item using its database ID.
     public boolean deletePantryItem(int id) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -130,7 +163,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return result > 0;
     }
-    public boolean updatePantryItem(int id, String name, double quantity, String unit, String expiryDate) {
+
+    // UPDATE: changes the saved information for an existing pantry item.
+    public boolean updatePantryItem(
+            int id,
+            String name,
+            double quantity,
+            String unit,
+            String expiryDate) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -149,7 +189,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return result > 0;
     }
+
+    // Pre-loads the application's recipe collection into the database.
     private void seedRecipes(SQLiteDatabase db) {
+
         long scrambledEggsId = insertRecipe(
                 db,
                 "Scrambled Eggs",
@@ -336,7 +379,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         insertRecipeIngredient(db, mashedPotatoId, "milk", 50, "ml");
         insertRecipeIngredient(db, mashedPotatoId, "butter", 20, "g");
 
-
         long potatoOmeletteId = insertRecipe(
                 db,
                 "Potato Omelette",
@@ -348,14 +390,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         insertRecipeIngredient(db, potatoOmeletteId, "butter", 10, "g");
     }
 
-    private long insertRecipe(SQLiteDatabase db, String name, String steps) {
+    // Inserts the recipe name and preparation steps and returns its database ID.
+    private long insertRecipe(
+            SQLiteDatabase db,
+            String name,
+            String steps) {
 
         ContentValues values = new ContentValues();
         values.put("name", name);
         values.put("steps", steps);
 
-        return db.insert("recipes", null, values);
+        return db.insert(
+                "recipes",
+                null,
+                values
+        );
     }
+
+    // Stores each ingredient required by a recipe.
     private void insertRecipeIngredient(
             SQLiteDatabase db,
             long recipeId,
@@ -369,8 +421,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("quantity", quantity);
         values.put("unit", unit);
 
-        db.insert("recipe_ingredients", null, values);
+        db.insert(
+                "recipe_ingredients",
+                null,
+                values
+        );
     }
+
+    // Retrieves the full seeded recipe collection.
     public ArrayList<Recipe> getAllRecipes() {
 
         ArrayList<Recipe> recipes = new ArrayList<>();
@@ -384,11 +442,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-                String steps = cursor.getString(cursor.getColumnIndexOrThrow("steps"));
+                int id = cursor.getInt(
+                        cursor.getColumnIndexOrThrow("id")
+                );
 
-                Recipe recipe = new Recipe(id, name, steps);
+                String name = cursor.getString(
+                        cursor.getColumnIndexOrThrow("name")
+                );
+
+                String steps = cursor.getString(
+                        cursor.getColumnIndexOrThrow("steps")
+                );
+
+                Recipe recipe = new Recipe(
+                        id,
+                        name,
+                        steps
+                );
+
                 recipes.add(recipe);
 
             } while (cursor.moveToNext());
@@ -398,6 +469,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return recipes;
     }
+
+    // Retrieves the ingredient requirements belonging to one selected recipe.
     public ArrayList<RecipeIngredient> getRecipeIngredients(int recipeId) {
 
         ArrayList<RecipeIngredient> ingredients = new ArrayList<>();
@@ -411,14 +484,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-                int storedRecipeId = cursor.getInt(cursor.getColumnIndexOrThrow("recipe_id"));
+                int id = cursor.getInt(
+                        cursor.getColumnIndexOrThrow("id")
+                );
+
+                int storedRecipeId = cursor.getInt(
+                        cursor.getColumnIndexOrThrow("recipe_id")
+                );
+
                 String ingredientName = cursor.getString(
                         cursor.getColumnIndexOrThrow("ingredient_name")
                 );
+
                 double quantity = cursor.getDouble(
                         cursor.getColumnIndexOrThrow("quantity")
                 );
+
                 String unit = cursor.getString(
                         cursor.getColumnIndexOrThrow("unit")
                 );

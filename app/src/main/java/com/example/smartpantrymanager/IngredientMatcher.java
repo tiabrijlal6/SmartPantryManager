@@ -5,6 +5,8 @@ import java.util.Locale;
 
 public class IngredientMatcher {
 
+    // Checks whether every ingredient required by a recipe
+    // exists in the pantry in a sufficient quantity.
     public static boolean canMakeRecipe(
             ArrayList<PantryItem> pantryItems,
             ArrayList<RecipeIngredient> requiredIngredients) {
@@ -46,6 +48,8 @@ public class IngredientMatcher {
                 }
             }
 
+            // If even one required ingredient is insufficient,
+            // the recipe must not be suggested.
             if (totalAvailableQuantity < requiredIngredient.getQuantity()) {
                 return false;
             }
@@ -54,6 +58,8 @@ public class IngredientMatcher {
         return true;
     }
 
+    // Normalises ingredient names so simple differences such as
+    // Egg/Eggs and Tomato/Tomatoes can still match.
     private static String normalizeIngredientName(String name) {
 
         if (name == null) {
@@ -68,8 +74,10 @@ public class IngredientMatcher {
 
         if (normalized.endsWith("atoes")) {
             normalized = normalized.substring(0, normalized.length() - 2);
+
         } else if (normalized.endsWith("ies") && normalized.length() > 3) {
             normalized = normalized.substring(0, normalized.length() - 3) + "y";
+
         } else if (normalized.endsWith("s")
                 && !normalized.endsWith("ss")
                 && normalized.length() > 1) {
@@ -80,6 +88,8 @@ public class IngredientMatcher {
         return normalized;
     }
 
+    // Converts different ways of writing the same measurement
+    // into a consistent unit used by the matching logic.
     private static String normalizeUnit(String unit) {
 
         if (unit == null) {
@@ -130,7 +140,10 @@ public class IngredientMatcher {
         }
     }
 
-    private static boolean areUnitsCompatible(String requiredUnit, String pantryUnit) {
+    // Determines whether two units can be compared or converted.
+    private static boolean areUnitsCompatible(
+            String requiredUnit,
+            String pantryUnit) {
 
         if (isWeightUnit(requiredUnit) && isWeightUnit(pantryUnit)) {
             return true;
@@ -159,6 +172,7 @@ public class IngredientMatcher {
         return unit.equals("ml") || unit.equals("l");
     }
 
+    // Converts compatible units before their quantities are compared.
     private static double convertQuantity(
             double quantity,
             String pantryUnit,
