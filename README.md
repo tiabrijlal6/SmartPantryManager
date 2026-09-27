@@ -131,6 +131,12 @@ The project also successfully completes an Android Studio build.
 4. Connect an Android device or start an emulator.
 5. Run the application using the Run button in Android Studio.
 
+
+### Why SQLite Was Chosen
+
+SQLite was chosen because Smart Pantry Manager only needs to store data locally on the user's device. It does not require an internet connection or a remote server, making SQLite suitable for storing pantry items and recipe information.
+
+SQLite also provides reliable persistent storage, meaning pantry data remains available after the application is closed and reopened. It integrates directly with Android through SQLiteOpenHelper and supports the Create, Read, Update and Delete operations required by the application.
 ## Author
 
 Tia Brijlal
