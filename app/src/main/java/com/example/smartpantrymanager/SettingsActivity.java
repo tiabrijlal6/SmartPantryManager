@@ -5,10 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Switch;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -17,7 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private Switch switchExpiryAlerts;
+    private SwitchCompat switchExpiryAlerts;
     private Spinner spinnerUnitPreference;
     private SharedPreferences sharedPreferences;
 
@@ -97,7 +97,6 @@ public class SettingsActivity extends AppCompatActivity {
         bottomNavigation.setSelectedItemId(R.id.navSettings);
 
         bottomNavigation.setOnItemSelectedListener(item -> {
-
             int itemId = item.getItemId();
 
             if (itemId == R.id.navSettings) {

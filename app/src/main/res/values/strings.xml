@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">SmartPantryManager</string>
+    <string name="app_name">Smart Pantry Manager</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="expiry_alerts_title">Expiry Date Alerts</string>
+    <string name="enable_expiry_alerts">Enable expiry alerts</string>
+    <string name="preferred_measurement_unit">Preferred Measurement Unit</string>
+
+    <string name="nav_pantry">Pantry</string>
+    <string name="nav_recipes">Recipes</string>
+    <string name="nav_settings">Settings</string>
 </resources>
